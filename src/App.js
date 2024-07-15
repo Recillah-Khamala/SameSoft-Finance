@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppNavbar from './components/Navbar';
-import HomePage from './pages/Login';
+import Login from './pages/Login';
 import BalanceSheet from './components/BalanceSheet';
 import Statement from './components/Statement';
 import Transaction from './components/Transaction';
@@ -15,6 +15,7 @@ function App() {
         <main className="App-main">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/balancesheet" element={<BalanceSheet />} />
             <Route path="/statement" element={<Statement />} />
             <Route path="/transaction" element={<Transaction />} />

@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setToken } from "../store/authSlice";
 import api from "../services/api";
 
 const Login = () => {
@@ -10,6 +12,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +21,10 @@ const Login = () => {
 
     try {
       const response = await api.post("/user/login", { email, password });
-      const { token } = response.data;
+      const { data: token } = response.data;
+
+      // Dispatch the setToken action
+      dispatch(setToken(token));
 
       localStorage.setItem("token", token);
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;

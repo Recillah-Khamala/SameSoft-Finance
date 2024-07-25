@@ -1,4 +1,5 @@
 import axios from "axios";
+import { store } from "../store";
 
 const API_BASE_URL = "https://acc-api.samesoft.app";
 
@@ -6,12 +7,12 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-export const setAuthToken = (token) => {
+api.interceptors.request.use((config) => {
+  const token = store.getState().auth.token;
   if (token) {
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers.common["Authorization"];
+    config.headers.Authorization = `Bearer ${token}`;
   }
-};
+  return config;
+});
 
 export default api;

@@ -1,21 +1,23 @@
-import React, { useState, useEffect, memo } from 'react';
-import { Table, Alert, Spinner } from 'react-bootstrap';
-import api from '../services/api';
+import React, { useState, useEffect, memo } from "react";
+import { Table, Alert, Spinner } from "react-bootstrap";
+import api from "../services/api";
 
 const BalanceSheet = () => {
   const [balanceSheet, setBalanceSheet] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchBalanceSheet = async () => {
       setIsLoading(true);
-      setError('');
+      setError("");
       try {
-        const response = await api.get('/transaction/balance-sheet');
+        const response = await api.get("/transaction/balance-sheet");
         setBalanceSheet(response.data);
       } catch (err) {
-        setError(`Error fetching balance sheet: ${err.response?.data?.message || err.message}`);
+        setError(
+          `Error fetching balance sheet: ${err.response?.data?.message || err.message}`,
+        );
       } finally {
         setIsLoading(false);
       }
@@ -29,7 +31,11 @@ const BalanceSheet = () => {
   }, []);
 
   const calculateTotal = (data) => {
-    return data.reduce((sum, item) => sum + (typeof item.balance === 'number' ? item.balance : 0), 0);
+    return data.reduce(
+      (sum, item) =>
+        sum + (typeof item.balance === "number" ? item.balance : 0),
+      0,
+    );
   };
 
   const RenderSection = memo(({ title, data }) => (
@@ -49,13 +55,19 @@ const BalanceSheet = () => {
               <tr key={item.account_code}>
                 <td>{item.account_code}</td>
                 <td>{item.account_name}</td>
-                <td>{typeof item.balance === 'number' ? item.balance.toFixed(2) : 'N/A'}</td>
+                <td>
+                  {typeof item.balance === "number"
+                    ? item.balance.toFixed(2)
+                    : "N/A"}
+                </td>
               </tr>
             ))}
           </tbody>
         </Table>
       </div>
-      <p><strong>Total: {calculateTotal(data).toFixed(2)}</strong></p>
+      <p>
+        <strong>Total: {calculateTotal(data).toFixed(2)}</strong>
+      </p>
     </>
   ));
 
@@ -67,12 +79,14 @@ const BalanceSheet = () => {
         <Spinner animation="border" />
       ) : error ? (
         <Alert variant="danger">{error}</Alert>
-      ) : balanceSheet && (
-        <div>
-          <RenderSection title='Assets' data={balanceSheet.assets} />
-          <RenderSection title='Liabilities' data={balanceSheet.liability} />
-          <RenderSection title='Equity' data={balanceSheet.equity} />
-        </div>
+      ) : (
+        balanceSheet && (
+          <div>
+            <RenderSection title="Assets" data={balanceSheet.assets} />
+            <RenderSection title="Liabilities" data={balanceSheet.liability} />
+            <RenderSection title="Equity" data={balanceSheet.equity} />
+          </div>
+        )
       )}
     </div>
   );
